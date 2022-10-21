@@ -85,3 +85,8 @@ export interface IGenericResponse {
   status: string;
   message: string;
 }
+
+
+export type CustomErrorType = {
+  response: { [key: string]: { [key: string]: string } };
+}

@@ -7,7 +7,7 @@ const instance = axios.create({
 const APIs = {
   instance,
   baseUrl: process.env.REACT_APP_BASE_URL,
-  getUsers: () => instance.get("/users"),
+  getUsers: () => instance.get("/user"),
   register: (data: AuthFormData) => instance.post("/users/register", data),
   login: (data: AuthFormData) =>
     instance.post("/users/login", data).then((response) => {

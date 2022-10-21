@@ -15,9 +15,8 @@ import { useTheme } from "@mui/material/styles";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import placesAxios from "utils/placesAxios";
-import { FormData, PlacesDataType } from "types";
+import { CustomErrorType, FormData, PlacesDataType } from "types";
 import useLayout from "hooks/useLayout";
-import { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { setLoading, setSnackbar } from "redux/features/layoutSlice";
 
@@ -40,7 +39,7 @@ const UpdatePlace = () => {
     isLoading: isFetchLoading,
     isError,
     error,
-  } = useQuery<PlacesDataType, AxiosError>(["SinglePlace", `${pid}`], () => {
+  } = useQuery<PlacesDataType>(["SinglePlace", `${pid}`], () => {
     return placesAxios.getPlaceById(`${pid}`).then((res) => res.data.place);
   });
 
@@ -73,7 +72,7 @@ const UpdatePlace = () => {
   useLayout({
     isError,
     isLoading: isFetchLoading,
-    errorMessage: `${error?.message}`,
+    errorMessage: `${(error as CustomErrorType)?.response?.data.message}`,
   });
 
   useEffect(() => {

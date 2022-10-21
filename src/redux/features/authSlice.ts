@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import placesAxios from "utils/placesAxios";
 import { setSnackbar } from "./layoutSlice";
-import { AuthFormData, IUser } from "types";
+import { AuthFormData, CustomErrorType, IUser } from "types";
 
 let user;
 const localStorageData = localStorage.getItem("user");
@@ -33,12 +33,7 @@ export const register = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      const errObject = (
-        error as {
-          response: { [key: string]: { [key: string]: string } };
-        }
-      ).response.data.message;
-      let message = `${errObject}`;
+      const message = `${(error as CustomErrorType)?.response?.data.message}`;
       thunkAPI.dispatch(
         setSnackbar({
           open: true,
@@ -59,12 +54,7 @@ export const login = createAsyncThunk(
       const fetchedUser: IUser = data.user;
       return { user: fetchedUser };
     } catch (error) {
-      const errObject = (
-        error as {
-          response: { [key: string]: { [key: string]: string } };
-        }
-      ).response.data.message;
-      let message = `${errObject}`;
+      const message = `${(error as CustomErrorType)?.response?.data.message}`;
       thunkAPI.dispatch(
         setSnackbar({
           open: true,

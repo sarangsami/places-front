@@ -65,8 +65,8 @@ const Authentication = () => {
   const onSubmitHandler: SubmitHandler<AuthFormData> = (
     values: AuthFormData
   ) => {
+    dispatch(setLoading(true));
     if (isLogin) {
-      dispatch(setLoading(true));
       dispatch(login(values))
         .unwrap()
         .then(() => {
@@ -84,7 +84,6 @@ const Authentication = () => {
           dispatch(setLoading(false));
         });
     } else {
-      dispatch(setLoading(true));
       dispatch(thunkRegister(values))
         .unwrap()
         .then(() => {
