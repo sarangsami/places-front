@@ -39,9 +39,8 @@ const UserListItem = (props: { data: UserDataType }) => {
               src={image}
               sx={{
                 maxWidth: 150,
-                maxHeight: 150,
+                height: 150,
                 width: "100%",
-                height: "100%",
               }}
             />
           </Box>

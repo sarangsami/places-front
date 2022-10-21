@@ -7,7 +7,7 @@ const instance = axios.create({
 const APIs = {
   instance,
   baseUrl: process.env.REACT_APP_BASE_URL,
-  getUsers: () => instance.get("/user"),
+  getUsers: () => instance.get("/users"),
   register: (data: AuthFormData) => instance.post("/users/register", data),
   login: (data: AuthFormData) =>
     instance.post("/users/login", data).then((response) => {
@@ -16,7 +16,7 @@ const APIs = {
       }
       return response.data;
     }),
-  logOut: () => localStorage.removeItem("users"),
+  logOut: () => localStorage.removeItem("user"),
   getUsersPlacesById: (id: string) => instance.get(`/places/user/${id}`),
   getPlaceById: (id: string) => instance.get(`/places/${id}`),
   postNewPlace: (data: FormData) => instance.post(`/places`, data),
