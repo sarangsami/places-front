@@ -16,7 +16,7 @@ const APIs = {
       }
       return response.data;
     }),
-  logOut: () => localStorage.removeItem("user"),
+  logOut: () => localStorage.removeItem("users"),
   getUsersPlacesById: (id: string) => instance.get(`/places/user/${id}`),
   getPlaceById: (id: string) => instance.get(`/places/${id}`),
   postNewPlace: (data: FormData) => instance.post(`/places`, data),
