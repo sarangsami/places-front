@@ -1,6 +1,5 @@
 import {
   createSearchParams,
-  Navigate,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
@@ -20,41 +19,53 @@ import { LockOutlined } from "@mui/icons-material";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { AuthFormData } from "types";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login, register as thunkRegister } from "redux/features/authSlice";
 import { AppDispatch, useAppSelector } from "redux/store";
 import { setLoading, setSnackbar } from "redux/features/layoutSlice";
+import ImageUpload from "components/ImageUpload";
 
 const Authentication = () => {
   const routeNavigate = useNavigate();
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
-
   const authRole = searchParams.get("role");
   const { isLoggedIn } = useAppSelector((state) => state.authState);
-
   const [isLogin, setIsLogin] = useState<boolean>(true);
-
   const {
     register,
     unregister,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful },
+    formState,
+    setValue,
+    clearErrors,
   } = useForm<AuthFormData>();
+  const { errors, isSubmitSuccessful } = formState;
 
   useEffect(() => {
+    if (isLoggedIn) {
+      routeNavigate("/");
+    }
     if (authRole === "register") {
       setIsLogin(false);
       register("firstName", {
         required: "Name is Required",
       });
+      register("lastName", {
+        required: "Last Name is Required",
+      });
+      register("image", {
+        required: "Image is Required",
+      });
     } else {
       setIsLogin(true);
       unregister("firstName");
+      unregister("lastName");
+      unregister("image");
     }
-  }, [authRole, register, unregister]);
+  }, [authRole, register, unregister, isLoggedIn, routeNavigate]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -107,11 +118,6 @@ const Authentication = () => {
         });
     }
   };
-
-  if (isLoggedIn) {
-    return <Navigate to="/" />;
-  }
-
   return (
     <Container maxWidth="sm">
       <Paper>
@@ -137,34 +143,41 @@ const Authentication = () => {
             sx={{ mt: 1, width: "100%" }}
           >
             {!isLogin && (
-              <Grid container spacing={3}>
-                <Grid item xl lg md sm xs>
-                  <TextField
-                    error={errors.firstName ? true : false}
-                    {...register("firstName", {
-                      required: "First Name is Required",
-                    })}
-                    helperText={errors.firstName && errors.firstName?.message}
-                    margin="normal"
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                  />
+              <Fragment>
+                <ImageUpload
+                  clearErrors={clearErrors}
+                  setValue={setValue}
+                  hasError={errors?.image ? `${errors.image.message}` : ""}
+                />
+                <Grid container spacing={3}>
+                  <Grid item xl lg md sm xs>
+                    <TextField
+                      error={errors.firstName ? true : false}
+                      {...register("firstName", {
+                        required: "First Name is Required",
+                      })}
+                      helperText={errors.firstName && errors.firstName?.message}
+                      margin="normal"
+                      fullWidth
+                      id="firstName"
+                      label="First Name"
+                    />
+                  </Grid>
+                  <Grid item xl lg md sm xs>
+                    <TextField
+                      error={errors.lastName ? true : false}
+                      {...register("lastName", {
+                        required: "Last Name is Required",
+                      })}
+                      helperText={errors.lastName && errors.lastName?.message}
+                      margin="normal"
+                      fullWidth
+                      id="lastName"
+                      label="Last Name"
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xl lg md sm xs>
-                  <TextField
-                    error={errors.lastName ? true : false}
-                    {...register("lastName", {
-                      required: "Last Name is Required",
-                    })}
-                    helperText={errors.lastName && errors.lastName?.message}
-                    margin="normal"
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                  />
-                </Grid>
-              </Grid>
+              </Fragment>
             )}
             <TextField
               error={errors.email ? true : false}
@@ -192,8 +205,8 @@ const Authentication = () => {
               {...register("password", {
                 required: "Password is Required",
                 minLength: {
-                  value: 5,
-                  message: "Your password should at least 5 characters",
+                  value: 6,
+                  message: "Your password should at least 6 characters",
                 },
               })}
               helperText={errors.password && errors.password?.message}

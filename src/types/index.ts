@@ -59,6 +59,7 @@ export type AuthFormData = {
   password: string;
   firstName?: string;
   lastName?: string;
+  image?: File;
 };
 export type RegisterInputType = {
   email: string;
@@ -78,7 +79,7 @@ export interface IUser {
   name: string;
   id: string;
   family: string;
-  _id?:string
+  _id?: string;
 }
 
 export interface IGenericResponse {
@@ -86,7 +87,6 @@ export interface IGenericResponse {
   message: string;
 }
 
-
 export type CustomErrorType = {
   response: { [key: string]: { [key: string]: string } };
-}
+};
