@@ -46,12 +46,12 @@ export type FormData = {
   title: string;
   description: string;
   address?: string;
-  coordinates?: {
+  coordinates: {
     lat: number;
     lng: number;
   };
-  image?: string;
-  creator?: string;
+  image: File;
+  creator: string;
 };
 
 export type AuthFormData = {

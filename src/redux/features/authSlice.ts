@@ -15,16 +15,16 @@ if (localStorageData) {
 export const register = createAsyncThunk(
   "auth/register",
   async (data: AuthFormData, thunkAPI) => {
-    const { firstName, lastName, email, password,image } = data;
-    const modifiedData = {
-      name: firstName,
-      family: lastName,
-      email,
-      password,
-      image
-    };
+    const { firstName, lastName, email, password, image } = data;
+    const formData = new FormData();
+    formData.append("name", firstName || "");
+    formData.append("family", lastName || "");
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("image", image || "");
+
     try {
-      const response = await placesAxios.register(modifiedData);
+      const response = await placesAxios.register(formData);
       thunkAPI.dispatch(
         setSnackbar({
           open: true,

@@ -19,6 +19,7 @@ import Modal from "components/Modal";
 import Map from "components/Map";
 import { useMutation, useQueryClient } from "react-query";
 import { useAppSelector } from "redux/store";
+import { BackendURL } from "utils/utils";
 
 type PlaceItemModals = {
   mapModal: boolean;
@@ -94,8 +95,8 @@ const PlaceListItem = (props: { place: PlacesDataType }) => {
     <Paper sx={{ borderRadius: 2 }}>
       <CardMedia
         component="img"
-        height="140"
-        image={image}
+        height="400"
+        image={BackendURL + image}
         alt={title}
         sx={{ borderRadius: "8px 8px 0 0" }}
       />

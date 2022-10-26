@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import placesAxios from "utils/placesAxios";
 
-import { FormData } from "types";
+import { FormData as MyFormData } from "types";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoading, setSnackbar } from "redux/features/layoutSlice";
 import { useAppSelector } from "redux/store";
+import ImageUpload from "components/ImageUpload";
 
 const NewPlace = () => {
   const [userLocation, setUserLocation] = useState({
@@ -21,7 +22,9 @@ const NewPlace = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+    clearErrors,
+    setValue,
+  } = useForm<MyFormData>();
 
   const navigate = useNavigate();
 
@@ -66,16 +69,21 @@ const NewPlace = () => {
   );
 
   const onSubmit = handleSubmit((data) => {
-    const finalData = {
-      ...data,
-      coordinates: userLocation,
-      image: "https://fakeimg.pl/300/",
-      creator: `${user?._id}`,
-    };
-    mutate(finalData);
+    const { title, description, address, image } = data;
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("address", address || "");
+    formData.append(`coordinates`, JSON.stringify(userLocation));
+    formData.append("image", image);
+    formData.append("creator", `${user?._id}`);
+    mutate(formData);
   });
 
   useEffect(() => {
+    register("image", {
+      required: "Image is Required",
+    });
     navigator.geolocation.getCurrentPosition(function (position) {
       setUserLocation({
         lat: position.coords.latitude,
@@ -89,13 +97,26 @@ const NewPlace = () => {
       dispatch(setLoading(false));
       setBtnName("Submit");
     }
-  }, [isLoading, dispatch]);
+  }, [isLoading, dispatch,register]);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length === 1) {
+      const currentFile = event.target.files[0];
+      setValue("image", currentFile);
+      clearErrors("image");
+    }
+  };
 
   return (
     <Container maxWidth="md">
       <Paper sx={{ p: 3, mt: 6 }}>
         <form onSubmit={onSubmit}>
           <Stack direction="column" spacing={3}>
+            <ImageUpload
+              newPlace
+              handleImageChange={handleImageChange}
+              hasError={errors?.image ? `${errors.image.message}` : ""}
+            />
             <TextField
               fullWidth
               error={errors.title ? true : false}

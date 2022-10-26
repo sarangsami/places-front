@@ -73,6 +73,14 @@ const Authentication = () => {
     }
   }, [isSubmitSuccessful, reset]);
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length === 1) {
+      const currentFile = event.target.files[0];
+      setValue("image", currentFile);
+      clearErrors("image");
+    }
+  };
+
   const onSubmitHandler: SubmitHandler<AuthFormData> = (
     values: AuthFormData
   ) => {
@@ -145,8 +153,7 @@ const Authentication = () => {
             {!isLogin && (
               <Fragment>
                 <ImageUpload
-                  clearErrors={clearErrors}
-                  setValue={setValue}
+                  handleImageChange={handleImageChange}
                   hasError={errors?.image ? `${errors.image.message}` : ""}
                 />
                 <Grid container spacing={3}>

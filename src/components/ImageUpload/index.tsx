@@ -1,16 +1,15 @@
 import { Box, Button, CardMedia, FormHelperText } from "@mui/material";
 import { useEffect, useState } from "react";
-import { UseFormClearErrors, UseFormSetValue } from "react-hook-form";
-import { AuthFormData } from "types";
 
 import noProfile from "assets/images/no-profile.png";
+import noImage from "assets/images/no-image.png";
 
 const ImageUpload = (props: {
-  setValue: UseFormSetValue<AuthFormData>;
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  newPlace?: boolean;
   hasError: string;
-  clearErrors: UseFormClearErrors<AuthFormData>;
 }) => {
-  const { setValue, hasError, clearErrors } = props;
+  const { hasError, handleImageChange, newPlace } = props;
   const [previewURL, setPreviewURL] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
@@ -29,9 +28,20 @@ const ImageUpload = (props: {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length === 1) {
       const currentFile = event.target.files[0];
-      setValue("image", currentFile);
-      clearErrors("image");
+      handleImageChange(event);
       setFile(currentFile);
+    }
+  };
+
+  const imageURL = () => {
+    if (previewURL === "") {
+      if (newPlace) {
+        return noImage;
+      } else {
+        return noProfile;
+      }
+    } else {
+      return previewURL;
     }
   };
   return (
@@ -40,14 +50,15 @@ const ImageUpload = (props: {
         <CardMedia
           component="img"
           alt="uploaded Image"
-          image={previewURL === "" ? noProfile : previewURL}
+          image={imageURL()}
           sx={{
-            height: 200,
-            width: 200,
+            height: newPlace ? 400 : 200,
+            width: newPlace ? "100%" : 200,
             border: (glTheme) =>
               `2px solid ${glTheme.palette.background.default}`,
             mb: 2,
             borderRadius: 2,
+            objectFit: "contain",
           }}
         />
         <Button

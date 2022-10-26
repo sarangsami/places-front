@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
 import { UserDataType } from "types";
+import { BackendURL } from "utils/utils";
 
 const UserListItem = (props: { data: UserDataType }) => {
   const {
@@ -36,7 +37,7 @@ const UserListItem = (props: { data: UserDataType }) => {
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Avatar
               alt={name}
-              src={image}
+              src={BackendURL + image}
               sx={{
                 maxWidth: 150,
                 height: 150,
