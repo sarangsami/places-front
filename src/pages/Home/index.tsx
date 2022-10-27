@@ -17,7 +17,6 @@ const Home = () => {
     isLoading,
     errorMessage: `${(error as CustomErrorType)?.response?.data.message}`,
   });
-  console.log(error);
   return (
     <Box pt={3}>{isLoading ? null : <UsersList users={data || []} />}</Box>
   );
