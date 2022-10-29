@@ -1,15 +1,19 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { Box, Typography } from "@mui/material";
 
 import placesAxios from "utils/placesAxios";
 
 import PlacesList from "components/PlacesList";
-import { CustomErrorType, PlacesDataType } from "types";
+import { CustomErrorType, PlacesDataType, UserDataType } from "types";
 import useLayout from "hooks/useLayout";
 
 const Places = () => {
   let { uid } = useParams();
+  const queryClient = useQueryClient();
+  const queries = queryClient.getQueryData<UserDataType[]>("allUsers");
+
+  const CurrentUser = queries?.find((user) => user.id === uid);
 
   const { data, isError, isLoading, error } = useQuery<PlacesDataType[]>(
     [`UserPlaces ${uid}`],
@@ -26,7 +30,12 @@ const Places = () => {
   });
   return (
     <Box>
-      <Typography>Places of user {uid}</Typography>
+      {CurrentUser ? (
+        <Typography>
+          Places of user {CurrentUser.name} {CurrentUser.family}
+        </Typography>
+      ) : null}
+
       <PlacesList data={data || []} />
     </Box>
   );

@@ -1,6 +1,7 @@
 import axios from "axios";
 import authHeader from "services/Auth/authHeader";
 import { FormData as MyFormData, AuthFormData } from "types";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import { BackendURL } from "./utils";
 
 let APIsURL = BackendURL + "api/";
@@ -16,7 +17,17 @@ const APIs = {
   login: (data: AuthFormData) =>
     instance.post("/users/login", data).then((response) => {
       if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        let expDate;
+        const decodedToken = jwtDecode<JwtPayload>(response.data.user.token);
+        const tokenExpire = decodedToken.exp;
+        if (tokenExpire) {
+          expDate = new Date(new Date(tokenExpire * 1000)).toISOString();
+        }
+        expDate = new Date(new Date().getTime() + 1000 * 60 * 60);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...response.data, exp: expDate })
+        );
       }
       return response.data;
     }),
@@ -26,7 +37,8 @@ const APIs = {
   postNewPlace: (data: FormData) =>
     instance.post(`/places`, data, { headers: authHeader() }),
   patchSinglePlace: (id: string, data: MyFormData) =>
-    instance.patch(`/places/${id}`, data,{ headers: authHeader() }),
-  deletePlaceById: (id: string) => instance.delete(`/places/${id}`,{ headers: authHeader() }),
+    instance.patch(`/places/${id}`, data, { headers: authHeader() }),
+  deletePlaceById: (id: string) =>
+    instance.delete(`/places/${id}`, { headers: authHeader() }),
 };
 export default APIs;

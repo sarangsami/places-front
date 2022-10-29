@@ -9,7 +9,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoading, setSnackbar } from "redux/features/layoutSlice";
-import { useAppSelector } from "redux/store";
 import ImageUpload from "components/ImageUpload";
 
 const NewPlace = () => {
@@ -30,7 +29,6 @@ const NewPlace = () => {
 
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const user = useAppSelector((state) => state.authState.user);
 
   const { mutate, isLoading } = useMutation(
     (values: FormData) => placesAxios.postNewPlace(values),
@@ -76,7 +74,6 @@ const NewPlace = () => {
     formData.append("address", address || "");
     formData.append(`coordinates`, JSON.stringify(userLocation));
     formData.append("image", image);
-    formData.append("creator", `${user?._id}`);
     mutate(formData);
   });
 

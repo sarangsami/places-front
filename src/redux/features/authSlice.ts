@@ -4,13 +4,16 @@ import placesAxios from "utils/placesAxios";
 import { setSnackbar } from "./layoutSlice";
 import { AuthFormData, CustomErrorType, IUser } from "types";
 
-let user;
+let user: IUser | null;
+let userExp: undefined | string;
 const localStorageData = localStorage.getItem("user");
 if (localStorageData) {
   user = JSON.parse(localStorageData).user;
+  userExp = JSON.parse(localStorageData).exp;
 } else {
   user = null;
 }
+console.log(userExp);
 
 export const register = createAsyncThunk(
   "auth/register",
@@ -77,9 +80,20 @@ export interface StateType {
   user: IUser | null;
 }
 
-const initialState: StateType = user
-  ? { isLoggedIn: true, user }
-  : { isLoggedIn: false, user: null };
+const stateGenerator = () => {
+  if (user && userExp) {
+    if (userExp > new Date().toISOString()) {
+      return { isLoggedIn: true, user };
+    } else {
+      placesAxios.logOut();
+      return { isLoggedIn: false, user: null };
+    }
+  } else {
+    return { isLoggedIn: false, user: null };
+  }
+};
+
+const initialState: StateType = stateGenerator();
 
 const authSlice = createSlice({
   name: "auth",

@@ -19,6 +19,7 @@ export type PlacesDataType = {
 export type UserDataType = {
   id: string;
   name: string;
+  family: string;
   image: string;
   places: PlacesDataType[];
 };
