@@ -188,7 +188,6 @@ const Authentication = () => {
             )}
             <TextField
               error={errors.email ? true : false}
-              defaultValue="sarang@live.com"
               {...register("email", {
                 required: "Email Addres is Required",
                 pattern: {
@@ -208,7 +207,6 @@ const Authentication = () => {
 
             <TextField
               error={errors.password ? true : false}
-              defaultValue="123456"
               {...register("password", {
                 required: "Password is Required",
                 minLength: {

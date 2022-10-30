@@ -8,7 +8,14 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { MenuBook } from "@mui/icons-material";
+import {
+  Login,
+  Landscape,
+  Menu,
+  PeopleAlt,
+  AddBusiness,
+  Logout,
+} from "@mui/icons-material";
 
 import Drawer from "../Drawer";
 import { useAppDispatch, useAppSelector } from "redux/store";
@@ -19,26 +26,31 @@ const navigationItems = [
     id: 1,
     name: "All Users",
     address: "/",
+    icon: <PeopleAlt />,
   },
   {
     id: 2,
     name: "My Places",
     address: "",
+    icon: <Landscape />,
   },
   {
     id: 3,
     name: "Add Place",
     address: "/places/new",
+    icon: <AddBusiness />,
   },
   {
     id: 4,
     name: "Authentication",
     address: "/authentication",
+    icon: <Login />,
   },
   {
     id: 5,
     name: "Sign Out",
     address: "/",
+    icon: <Logout />,
   },
 ];
 
@@ -85,26 +97,27 @@ function Navigation() {
     <>
       <AppBar component="nav">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuBook />
-          </IconButton>
           <Typography
             variant="h6"
             onClick={() => navigate("/")}
             component="div"
             sx={{
               flexGrow: 1,
-              display: { xs: "none", sm: "block", cursor: "pointer" },
+              cursor: "pointer",
             }}
           >
             Places
           </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="end"
+            onClick={handleDrawerToggle}
+            sx={{ display: { sm: "none" } }}
+          >
+            <Menu />
+          </IconButton>
+
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {renderMenu().map(({ id, name, address }) => {
               return (
@@ -125,6 +138,9 @@ function Navigation() {
           onOpenHandler={handleDrawerToggle}
           open={mobileOpen}
           items={renderMenu()}
+          onBtnClick={(name: string, address: string) =>
+            onBtnClick(name, address)
+          }
         />
       </Box>
       <Toolbar id="back-to-top-anchor" />

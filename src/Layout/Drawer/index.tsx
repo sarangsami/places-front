@@ -1,14 +1,13 @@
 import {
   Box,
-  Divider,
   Drawer,
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
-  Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { ReactNode } from "react";
 import { ReactChildrenType } from "types";
 
 const drawerWidth = 240;
@@ -16,16 +15,17 @@ const drawerWidth = 240;
 interface DrawerProps extends ReactChildrenType {
   onOpenHandler: () => void;
   open: boolean;
+  onBtnClick: (name: string, address: string) => void;
   items: {
     id: number;
     name: string;
     address: string;
+    icon?: ReactNode;
   }[];
 }
 
 const CustomDrawer = (props: DrawerProps) => {
-  const { window, onOpenHandler, open, items } = props;
-  const navigate = useNavigate();
+  const { window, onOpenHandler, open, items, onBtnClick } = props;
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -34,6 +34,7 @@ const CustomDrawer = (props: DrawerProps) => {
       container={container}
       variant="temporary"
       open={open}
+      anchor="right"
       onClose={onOpenHandler}
       ModalProps={{
         keepMounted: true, // Better open performance on mobile.
@@ -47,22 +48,15 @@ const CustomDrawer = (props: DrawerProps) => {
       }}
     >
       <Box onClick={onOpenHandler} sx={{ textAlign: "center" }}>
-        <Typography
-          variant="h6"
-          onClick={() => navigate("/")}
-          sx={{ my: 2, cursor: "pointer" }}
-        >
-          Places
-        </Typography>
-        <Divider />
         <List>
-          {items.map(({ id, name, address }) => (
+          {items.map(({ id, name, address, icon }) => (
             <ListItem key={id} disablePadding>
               <ListItemButton
                 sx={{ textAlign: "center" }}
-                onClick={() => navigate(address)}
+                onClick={() => onBtnClick(name, address)}
               >
                 <ListItemText primary={name} />
+                <ListItemIcon sx={{ minWidth: "unset" }}>{icon}</ListItemIcon>
               </ListItemButton>
             </ListItem>
           ))}
